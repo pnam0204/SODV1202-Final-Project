@@ -36,7 +36,7 @@ Moves counters also increment by 1. For the rare case no one win after the count
 After the loop end Winner() method will announce the winner, which is the last person making the checkmate move. This also has a condition to only happen if the game actually end (GameOver is true) so then winner message won't appear in draw case (GameOver is false)
 After this the game will ask if you want to rematch and will keep asking if you input anything other than "Y" or "N" (it is not case sensitive). If press "N' then the game simply end and bring you back to the main menu with instruction and command. If press "Y" then Swap() will swap player position and the game will restart by calling Start() again
 
-Next is the single player game mode made using subclass AI
+Next is the single player game mode made using subclass AI (well, actually just simple random number instead of actual AI with lgoical algorithm)
 Since one player is still human, class AI inherit methods from class Human to use.
 AI constructor has slight changes, it only accept 1 player name because P2 is automatically assigned as "AI"
 But the random Swap() still happen so the AI can still be swap to P1 and go first
