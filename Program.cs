@@ -5,6 +5,7 @@ abstract class ConnectFour
     protected string P1;
     protected string P2;
     protected string[,] board;
+    protected bool GameOver;
     protected int row;
     protected int column;
     public ConnectFour()
@@ -125,7 +126,6 @@ abstract class ConnectFour
 }
 class Human : ConnectFour
 {
-    protected bool GameOver;
     protected Random R = new Random(7);
     protected int RandomFirstMove;
     public Human()
@@ -165,24 +165,24 @@ class Human : ConnectFour
     }
     protected void Set(int j, string XO)
     {
-        bool flag = false;
+        bool availableSpace = false;
         int redo;
         for (int i = row - 2; i >= 0; i--)
         {
             if (board[i, j] == "_")
             {
                 board[i, j] = XO;
-                flag = true;
+                availableSpace = true;
                 break;
             }
             else if (i == 0)
             {
 
-                flag = false;
+                availableSpace = false;
                 break;
             }
         }
-        if (!flag)
+        if (!availableSpace)
         {
             Console.Write($"Column {j + 1} is full! Try again: ");
             redo = ValidNumber();
@@ -191,6 +191,7 @@ class Human : ConnectFour
     }
     public override void Start()
     {
+        int count = 0;
         ClearGameBoard();
         DisplayBoard();
         GameOver = false;
@@ -217,8 +218,17 @@ class Human : ConnectFour
                 Console.WriteLine($"{P2} chose column {number+1}");
             }
             GameOver = CheckWinner();
+            count++;
+            if (count >= 42 && !GameOver)
+            {
+                Console.WriteLine("It's a draw!");
+                break;
+            }
         }
-        Winner(turn);
+        if (GameOver)
+        {
+            Winner(turn);
+        }
         string answer;
         do
         {
@@ -256,29 +266,30 @@ class AI : Human
     }
     protected void AISet(int j, string XO)
     {
-        bool flag = false;
+        bool availableSpace = false;
         for (int i = row - 2; i >= 0; i--)
         {
             if (board[i, j] == "_")
             {
                 board[i, j] = XO;
-                flag = true;
+                availableSpace = true;
                 break;
             }
             else if (i == 0)
             {
 
-                flag = false;
+                availableSpace = false;
                 break;
             }
         }
-        if (!flag)
+        if (!availableSpace)
         {
             AISet(AIRNG(), XO);
         }
     }
     public override void Start()
     {
+        int count = 0;
         ClearGameBoard();
         DisplayBoard();
         GameOver = false;
@@ -321,8 +332,17 @@ class AI : Human
                 Console.WriteLine($"{P2} chose column {number + 1}");
             }
             GameOver = CheckWinner();
+            count++;
+            if (count >= 42 && !GameOver)
+            {
+                Console.WriteLine("It's a draw!");
+                break;
+            }
         }
-        Winner(turn);
+        if (GameOver) 
+        {
+            Winner(turn); 
+        }
         string answer;
         do
         {
@@ -340,16 +360,19 @@ class Program
 {
     static void Main(string[] args)
     {
-        string instruction = "Welcome to Connect Four!\nEnter \"start\" to begin or \"exit\" to close the game\nEnter \"AI\" as one of the player to start single player mode";
-        bool flag;
+        string welcomeMessage = "Welcome to Connect Four!";
+        string instruction = "Enter \"start\" to begin or \"exit\" to close the game\nEnter \"AI\" as one of the player to start single player mode";
+        bool playing;
+        Console.WriteLine(welcomeMessage);
         do
         {
-            flag = true;
+            playing = true;
+            Console.WriteLine(instruction);
             Console.Write("Enter a command: ");
             string cmd = Console.ReadLine().ToLower().Trim();
             if (cmd == "exit")
             {
-                flag = false;
+                playing = false;
             }
             else if (cmd == "start")
             {
@@ -388,10 +411,6 @@ class Program
             {
                 Console.WriteLine("Unknown command!");
             }
-        } while (flag);
-        
-
-        
-        //Game.DisplayBoard();
+        } while (playing);
     }
 }

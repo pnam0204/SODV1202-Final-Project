@@ -1,0 +1,50 @@
+class Program is nothing special
+Show welcome message, then instruction
+If you type "exit" the program end.
+If you type "start" the program will ask for 2 player names. The restriction is name cannot be empty and player B cannot have the same name as player A.
+Anything else and it'll show "Unknown command" then ask for input again
+Then depending on your input, different game mode and constructors will be called.
+If neither player are "AI" then 2 player gamemode will be executed by using Human class
+If one of the player are "AI" then HumanVsAI will be made using AI class
+
+The first class is abstract class ConnectFour. It serves as the foundational superclass for later subclasses.
+Its purpose is to hold general information and method for the game, such as player name, the game board as 2D array, number of rows and columns.
+It also contain general function that's needed in both game modes.
+ClearGameBoard() is to clear the grid before starting/restarting new game
+DisplayBoard() will show the grid for player, it will be called in subclass after any update to the grid
+CheckWinner() will check the grid horizontally, vertically then diagonally (both direction) and return true if there are 4 consecutive match in any direction, ignoring "_" as it's considered empty space in the grid. This true/false value will be used later to stop the game
+Winner() simply display the winner name after the game concluded
+Swap() is used to swap player position, it'll be called when player decided to rematch
+Start() is just an abstract class as a placeholder as ConnectFour only contain general functionality and not actually a game mode.
+That why almost all variable and method are declared as protected as there're not meant to be accessed.
+
+Next is the subclass Human for 2 player game mode
+By calling the parameter constructor, player names will be input in position 1 and 2 respectively to decide who will go first. Then randomly swap their position with a random coin flip.
+ValidNumber() is used to accept player input and check if it's actually a valid column number (1 to 7). If player enter something else the it'll keep asking again with a do-while loop
+Set() is used to put the symbol into the game grid. It take 2 parameters, int for column number and string for either "X" or "O". It check for first available space "_" from the highest value to lowest (bottom row on DisplayBoard() to top row). If the loop end without any available space, it mean that the column is full and will ask player to input another number. Here it will get and validate the input with ValidNumber() as explained. Then the number returned from ValidNumber() will be used by Set() again in a recursive loop until it's a column not full.
+Finally we get to override Start(), this time as an actual method instead of an abstract placeholder one.
+We start with count = 0 to count all the moves made by both players
+GameOver = false because the game just start
+ClearGameBoard() inherited from ConnectFour to reset the grid
+Then display it for player with DisplayBoard()
+Then we alternate between players' turns with a while loop
+A message will tell players whose turn it is and ask for a number. Which will then call ValidNumber() and Set() to put their respective symbol into the chosen column (of course the column must have space available or else the recursive loop will ask again).
+Then DisplayBoard() is called to clear and console output and show the updated grid.
+The another message will show saying {player name} chose {number] column, just in case the other player did not pay attention.
+Then the game will check for a 4-match with CheckWinner() that return true/false to GameOver. If there's no match, GameOver = false and the loop will keep going using (!GameOver) condition.
+Moves counters also increment by 1. For the rare case no one win after the counter reach 42 (the grid is all full), the loop will stop with a message telling "It's a draw"
+After the loop end Winner() method will announce the winner, which is the last person making the checkmate move. This also has a condition to only happen if the game actually end (GameOver is true) so then winner message won't appear in draw case (GameOver is false)
+After this the game will ask if you want to rematch and will keep asking if you input anything other than "Y" or "N" (it is not case sensitive). If press "N' then the game simply end and bring you back to the main menu with instruction and command. If press "Y" then Swap() will swap player position and the game will restart by calling Start() again
+
+Next is the single player game mode made using subclass AI
+Since one player is still human, class AI inherit methods from class Human to use.
+AI constructor has slight changes, it only accept 1 player name because P2 is automatically assigned as "AI"
+But the random Swap() still happen so the AI can still be swap to P1 and go first
+Set() and ValidNumber() for human player are inherited fully with no changes, so no override needed
+AI however get new method for the AI
+AIRNG() purpose is the same is ValidNumber(), but instead of asking for player input it just generate a number with range 1 to 7, no need to ask again if the generated number is always in valid range
+Same goes for AISet(), it work exactly like Set() but it'll simply generate a new number if the chosen column is full.
+Start() is also mostly the same. Still ask for input and use ValidNumber() with Set() during human's turns. It'll skip input and use AIRNG() with AISet() for AI's turns.
+After that, displaying grid, showing message of last move, checking for winner/gameover and announcing draw/winner is exactly the same as it was in Human superclass
+
+Using Encapsulation concept, most if not everything is kept in protected only for inheritance and subclass, methods can call each other or itself recursively without involvement from Program class. Program class can not access anything beside class constructor and Start(). Which mean the gane state and value cannot be cheated and modified from outside
