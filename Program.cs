@@ -165,7 +165,7 @@ class Human : ConnectFour
     }
     protected void Set(int j, string XO)
     {
-        bool availableSpace = false;
+        bool availableSpace = true;
         int redo;
         for (int i = row - 2; i >= 0; i--)
         {
@@ -177,7 +177,6 @@ class Human : ConnectFour
             }
             else if (i == 0)
             {
-
                 availableSpace = false;
                 break;
             }
@@ -260,9 +259,9 @@ class AI : Human
     }
     protected int AIRNG()
     {
-        int number = R.Next(0, 6);
+        int number = R.Next(1, 7);
 
-        return number;
+        return number - 1;
     }
     protected void AISet(int j, string XO)
     {
@@ -406,6 +405,7 @@ class Program
                     AI HumanVsAI = new AI(playerA);
                     HumanVsAI.Start();
                 }
+                Console.Clear();
             }
             else
             {
